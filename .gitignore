@@ -1,0 +1,16 @@
+# Python virtual environment
+venv/
+
+# Environment variables
+.env
+
+# Cache and temporary files
+__pycache__/
+*.pyc
+.idea/
+
+
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
