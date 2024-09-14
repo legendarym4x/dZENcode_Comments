@@ -1,83 +1,51 @@
-from django.core.exceptions import ValidationError
 from django.db import models
-from django.core.validators import RegexValidator, EmailValidator, URLValidator, FileExtensionValidator
-from django.utils.html import strip_tags
 from django.contrib.auth.models import User
+from django.urls import reverse
 from django.utils import timezone
 
-# Validators
-alphanumeric_validator = RegexValidator(r'^[0-9a-zA-Z]*$', 'Only alphanumeric characters are allowed.')
-file_size_limit = 100 * 1024  # 100 KB limit for text files
 
+class Post(models.Model):
+    STATUS_CHOICES = (('draft', 'Draft'), ('published', 'Published'))
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=255, verbose_name="Title")
+    author = models.ForeignKey(User, related_name='blog_posts', on_delete=models.CASCADE)
+    body = models.TextField(verbose_name="Body")
+    publish = models.DateTimeField(default=timezone.now)
+    published = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
+    updated = models.DateTimeField(auto_now=True, verbose_name="Updated at")
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='draft')
 
-def validate_file_size(file):
-    if file.size > file_size_limit:
-        raise ValidationError("File size exceeds the allowed limit of 100 KB.")
+    def get_absolute_url(self):
+        return reverse('comments:post_detail', args=[self.publish.year, self.publish.strftime('%m'),
+                                                     self.publish.strftime('%d'), self.id])
+
+    class Meta:
+        ordering = ('-publish',)
+
+    def __str__(self):
+        return self.title
 
 
 class Comment(models.Model):
-    user_name = models.CharField(
-        max_length=255,
-        validators=[alphanumeric_validator],
-        verbose_name="User Name"
-    )
-    email = models.EmailField(
-        validators=[EmailValidator(message="Enter a valid email address.")],
-        verbose_name="E-mail"
-    )
-    home_page = models.URLField(
-        blank=True,
-        null=True,
-        validators=[URLValidator()],
-        verbose_name="Home page"
-    )
-    captcha = models.CharField(
-        max_length=6,
-        validators=[alphanumeric_validator],
-        verbose_name="CAPTCHA"
-    )
+    user_name = models.CharField(max_length=255, verbose_name="User Name", default='user')
+    email = models.EmailField(unique=True, verbose_name="E-mail")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    home_page = models.URLField(blank=True, null=True, verbose_name="Home page")
+    captcha = models.CharField(max_length=48, verbose_name="CAPTCHA", default='')
     text = models.TextField(verbose_name="Comment Text")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated at")
 
-    # Parent comment for threaded comments
-    parent = models.ForeignKey(
-        'self',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name='replies',
-        verbose_name="Parent Comment"
-    )
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
+                               related_name='replies', verbose_name="Parent Comment")
 
-    # Image field for image attachments with size restrictions
-    image = models.ImageField(
-        upload_to='images/',
-        blank=True,
-        null=True,
-        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'png', 'gif'])],
-        verbose_name="Image"
-    )
+    image = models.ImageField(upload_to='images/', blank=True, null=True, verbose_name="Image")
 
-    # File field for text file attachments with size restrictions
-    text_file = models.FileField(
-        upload_to='text_files/',
-        blank=True,
-        null=True,
-        validators=[
-            FileExtensionValidator(allowed_extensions=['txt']),
-            validate_file_size
-        ],
-        verbose_name="Text File"
-    )
+    text_file = models.FileField(upload_to='text_files/', blank=True, null=True, verbose_name="Text File")
 
     class Meta:
-        ordering = ['-created_at']  # Default sorting: newest comments first
+        ordering = ['-created_at']
 
     def __str__(self):
         return f"Comment by {self.user_name} on {self.created_at}"
-
-    def save(self, *args, **kwargs):
-        allowed_tags = []  # Specify the allowed tags if needed
-        self.text = strip_tags(self.text)  # Remove all HTML tags
-        super().save(*args, **kwargs)

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="{% static 'js/scripts.js' %}" defer></script>
+</head>
+<body>
+    <h1>Add Your Comment</h1>
+
+    {% if messages %}
+    <div class="alert">
+        <ul>
+            {% for message in messages %}
+            <li class="{% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {{ form.user_name.label_tag }} {{ form.user_name }} {{ form.user_name.errors }}
+        {{ form.email.label_tag }} {{ form.email }} {{ form.email.errors }}
+        {{ form.home_page.label_tag }} {{ form.home_page }} {{ form.home_page.errors }}
+        {{ form.captcha.label_tag }} {{ form.captcha }} {{ form.captcha.errors }}
+        {{ form.text.label_tag }} {{ form.text }} {{ form.text.errors }}
+        {{ form.image.label_tag }} {{ form.image }} {{ form.image.errors }}
+        {{ form.text_file.label_tag }} {{ form.text_file }} {{ form.text_file.errors }}
+
+        <button type="submit">Submit Comment</button>
+    </form>
+</body>
+</html>
