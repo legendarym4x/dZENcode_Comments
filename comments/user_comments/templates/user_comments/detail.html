@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <title>{{ post.title }}</title>
+</head>
+<body>
+    <div class="container">
+        <div id="app" data-post-id="{{ post_id }}" data-year="{{ year }}" data-month="{{ month }}" data-day="{{ day }}">
+            <div class="post">
+                <h1 v-if="post" v-html="post.title"></h1>
+                <p v-if="post" v-html="post.body"></p>
+            </div>
+            <div class="comments">
+                <h2 class="h7y6">Comments</h2>
+                <ul>
+                    <div class="comment-sort">
+                        <p>Sort by:
+                        <button @click="sortComments('user_name')">Name</button>
+                        <button @click="sortComments('email')">E-mail</button>
+                        <button @click="sortComments('date_added')">Date</button></p>
+                    </div>
+                    <button class="add-comment-button" @click="showCommentForm">Add a comment</button>
+                    <div v-if="showForm">
+                        <section class="comment-form slide-in" id="ugcNewComment">
+                            <h3 class="section-title">Write your comment:</h3>
+                            <form @submit.prevent="submitComment(year, month, day, postID)">
+                                {{ comment_form.non_field_errors }}
+                                <div class="form-group">
+                                    <div class="form-field">
+                                        <label for="user_name">Name:</label>
+                                        <input v-model="commentForm.user_name" type="text" id="user_name" class="form-control" placeholder="Enter your name">
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="home_page">Website:</label>
+                                        <input v-model="commentForm.home_page" type="text" id="home_page" class="form-control" placeholder="Enter your website">
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="email">E-mail:</label>
+                                        <input v-model="commentForm.email" type="text" id="email" class="form-control" placeholder="youremail@example.com">
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="text">Text:</label>
+                                        <div class="tag-buttons">
+                                            <button type="button" @click="insertTag('[i]')">[i]</button>
+                                            <button type="button" @click="insertTag('[strong]')">[strong]</button>
+                                            <button type="button" @click="insertTag('[code]')">[code]</button>
+                                            <button type="button" @click="insertTag('[a]')">[a]</button>
+                                        </div>
+                                        <textarea v-model="commentForm.text" id="text" class="form-control" rows="6" cols="20" placeholder="Write your comment"></textarea>
+                                    </div>
+                                    <div class="form-file">
+                                        <label for="image">Upload photo:</label>
+                                        <input type="file" id="image" class="custom-file-input" @change="handleImageUpload">
+                                    </div>
+                                    <div class="form-file">
+                                        <label for="image">Upload TXT file:</label>
+                                        <input type="file" id="image" class="custom-file-input" @change="handleFileUpload">
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="captcha">Captcha:</label>
+                                    </div>
+                                    <div class="form-captcha-image">
+                                        <img v-if="commentForm.captcha" :src="commentForm.captcha.image_url" alt="Captcha">
+                                        <button class="captcha-button" type="button" @click="getCaptcha()">Refresh</button>
+                                    </div>
+                                    <div class="form-field">
+                                        <input v-model="commentForm.captcha.value" type="text" id="captcha" class="form-control" placeholder="Enter the code from the image">
+                                    </div>
+                                </div>
+                                <div v-if="errorMessage" class="error-message"><span v-text="errorMessage"></span></div>
+                                <button type="submit">Send</button>
+                            </form>
+                        </section>
+                    </div>
+                    <li v-for="comment in comments">
+                        <comment :comment="comment" :comment_form="comment_form" :show-comment-form="showCommentForm" />
+                    </li>
+                </ul>
+                <div class="pagination">
+                    <button @click="loadPage(parseInt(page) - 1)" :disabled="parseInt(page) === parseInt(1)">Previous page</button>
+                    <span v-text="'Page ' + page + ' from ' + total_pages"></span>
+                    <button @click="loadPage(parseInt(page) + 1)" :disabled="parseInt(page) === parseInt(total_pages)">Next page</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.6/dist/purify.min.js"></script>
+    <script src="{% static 'js/comments.js' %}"></script>
+</body>
+</html>

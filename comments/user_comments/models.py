@@ -17,7 +17,7 @@ class Post(models.Model):
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='draft')
 
     def get_absolute_url(self):
-        return reverse('comments:post_detail', args=[self.publish.year, self.publish.strftime('%m'),
+        return reverse('user_comments:post_detail', args=[self.publish.year, self.publish.strftime('%m'),
                                                      self.publish.strftime('%d'), self.id])
 
     class Meta:
@@ -29,7 +29,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
     user_name = models.CharField(max_length=255, verbose_name="User Name", default='user')
-    email = models.EmailField(unique=True, verbose_name="E-mail")
+    email = models.EmailField(unique=False, verbose_name="E-mail")
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     home_page = models.URLField(blank=True, null=True, verbose_name="Home page")
     captcha = models.CharField(max_length=48, verbose_name="CAPTCHA", default='')
@@ -49,3 +49,9 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.user_name} on {self.created_at}"
+
+
+class UserInfo(models.Model):
+    user_name = models.CharField(max_length=255, verbose_name="User Name", default='user')
+    email = models.EmailField(unique=False, verbose_name="E-mail")
+
