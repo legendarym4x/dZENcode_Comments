@@ -18,7 +18,7 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse('user_comments:post_detail', args=[self.publish.year, self.publish.strftime('%m'),
-                                                     self.publish.strftime('%d'), self.id])
+                                                          self.publish.strftime('%d'), self.id])
 
     class Meta:
         ordering = ('-publish',)
@@ -37,11 +37,10 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated at")
 
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
-                               related_name='replies', verbose_name="Parent Comment")
+    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
+                                       related_name='replies', verbose_name="Parent Comment")
 
     image = models.ImageField(upload_to='images/', blank=True, null=True, verbose_name="Image")
-
     text_file = models.FileField(upload_to='text_files/', blank=True, null=True, verbose_name="Text File")
 
     class Meta:
@@ -54,4 +53,3 @@ class Comment(models.Model):
 class UserInfo(models.Model):
     user_name = models.CharField(max_length=255, verbose_name="User Name", default='user')
     email = models.EmailField(unique=False, verbose_name="E-mail")
-

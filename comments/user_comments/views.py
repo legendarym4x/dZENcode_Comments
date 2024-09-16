@@ -27,7 +27,6 @@ BLEACH_ALLOWED_TAGS = settings.BLEACH_ALLOWED_TAGS
 BLEACH_ALLOWED_ATTRIBUTES = settings.BLEACH_ALLOWED_ATTRIBUTES
 
 
-# When creating a comment or post
 def save_user_info(user_name, email):
     # Check if such a user exists in the database
     user_info, created = UserInfo.objects.get_or_create(
@@ -76,7 +75,7 @@ class CommentAPIView(APIView):
             else:
                 comments = Comment.objects.filter(post=post).order_by('created_at')
         else:
-            comments = Comment.objects.filter(post=post).select_related('post', 'parent').order_by(
+            comments = Comment.objects.filter(post=post).select_related('post', 'parent_comment').order_by(
                 '-created_at')
 
         # Convert comments to a dictionary
@@ -106,7 +105,7 @@ class CommentAPIView(APIView):
 
         # Pagination of the results
         paginator = pagination.PageNumberPagination()
-        paginator.page_size = 25
+        paginator.page_size = 10
         page = paginator.paginate_queryset(root_comments, request)
 
         # Serialize post and return the result
@@ -247,12 +246,10 @@ class PostDetailView(View):
         })
 
 
-# Функция для валидации XHTML разметки
+# Function for validating XHTML markup
 def validate_xhtml(text):
     try:
         etree.fromstring("<root>" + text + "</root>")
         return True
     except etree.XMLSyntaxError:
         return False
-
-

@@ -12,5 +12,4 @@ urlpatterns = [
          name='comment-list'),
     path('api/v1/comments/<int:year>/<int:month>/<int:day>/<int:post_id>/create/', views.CommentAPIView.as_view(),
          name='create-comment'),
-
 ]

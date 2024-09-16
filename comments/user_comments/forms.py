@@ -4,9 +4,6 @@ from captcha.fields import CaptchaField
 
 
 class CommentForm(forms.ModelForm):
-    class Meta:
-        model = Comment
-        fields = ['user_name', 'email', 'home_page', 'captcha', 'image', 'text']
 
     user_name = forms.CharField(label='User Name', max_length=100,
                                 widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -20,3 +17,6 @@ class CommentForm(forms.ModelForm):
     file = forms.FileField(label='Upload Text File', required=False,
                            widget=forms.ClearableFileInput(attrs={'class': 'custom-file-input'}))
 
+    class Meta:
+        model = Comment
+        fields = ['user_name', 'email', 'home_page', 'captcha', 'image', 'text']
