@@ -59,9 +59,10 @@ Log in to the web application container:
 10. Go to the admin panel and create the first post (for this we added a superuser). The post must be published and 
 have the status "Published":
 
-   ```bash
-   http://127.0.0.1:8000/admin
-   
+    ```bash
+    http://127.0.0.1:8000/admin
+  
+ 
 11. Go to our app page and start chatting :)
 
    ```bash
