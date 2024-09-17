@@ -15,7 +15,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['dzencode-comments.onrender.com', 'dzencode_comments.onrender.com', "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ['dzencode-comments-hy2f.onrender.com', 'dzencode-comments.onrender.com',
+                 'dzencode_comments.onrender.com', "127.0.0.1", "localhost"]
 
 BLEACH_ALLOWED_TAGS = ["a", "code", "i", "strong"]
 BLEACH_ALLOWED_ATTRIBUTES = {"a": ["href", "title"]}
