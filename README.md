@@ -65,10 +65,12 @@ have the status "Published":
  
 11. Go to our app page and start chatting :)
 
-   ```bash
-   http://127.0.0.1:8000/
-   
-## Usage:
+    ```bash
+    http://127.0.0.1:8000/
+
+
+ ## Usage:
+
 
 The application provides the following functions:
 
