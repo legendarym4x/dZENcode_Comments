@@ -15,7 +15,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ['dzencode-comments.onrender.com', 'dzencode_comments.onrender.com', "127.0.0.1", "localhost"]
 
 BLEACH_ALLOWED_TAGS = ["a", "code", "i", "strong"]
 BLEACH_ALLOWED_ATTRIBUTES = {"a": ["href", "title"]}
@@ -134,3 +134,9 @@ CAPTCHA_NOISE_FUNCTIONS = ("captcha.helpers.noise_dots",)
 CAPTCHA_BACKGROUND_COLOR = "#ffafbf"
 CAPTCHA_FOREGROUND_COLOR = "#000000"
 CAPTCHA_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+
+if not DEBUG:
+    STATIC_URL = '/static/'
+    STATIC_ROOT = BASE_DIR / 'staticfiles'
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
