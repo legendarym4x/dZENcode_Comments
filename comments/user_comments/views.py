@@ -105,7 +105,7 @@ class CommentAPIView(APIView):
 
         # Pagination of the results
         paginator = pagination.PageNumberPagination()
-        paginator.page_size = 10
+        paginator.page_size = 25
         page = paginator.paginate_queryset(root_comments, request)
 
         # Serialize post and return the result
