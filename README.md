@@ -1,7 +1,5 @@
 ## SPA application: Comments.
 
-## [Deploy](https://dzencode-comments-hy2f.onrender.com/)
-
 Our web application for Comments is built using the Django framework and the Vue.js frontend library. It allows users to add comments and engage in conversations on our website without registration, but with the requirement of entering valid information (including CAPTCHA). This file provides detailed instructions on how to install and run our web application.
 
 ## Installation:
